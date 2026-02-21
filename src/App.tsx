@@ -1,34 +1,31 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import Navbar from './components/Navbar'
+import Box from '@mui/material/Box';
+import MetricComponent from './components/MetricComponent';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <Box sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      height: 'calc(100vh - 20px)',
+    }}>
+      <Navbar />
+      <Box sx={{ flex: 1, display: "flex", flexDirection: "column", marginLeft: '220px', marginRight: '10px', gap: 1 }}>
+        {/* Top 2/3 */}
+        <Box sx={{ flex: 2, display: "flex", gap: 1 }}>
+          <Box sx={{ flex: 2, bgcolor: "primary.main", borderRadius: 3 }}></Box>
+          <Box sx={{ flex: 1, bgcolor: "primary.main", borderRadius: 3 }}></Box>
+        </Box>
+        {/* Bottom 1/3 */}
+        <Box sx={{ flex: 1, display: "flex", gap: 1 }}>
+          <Box sx={{ flex: 1, bgcolor: "primary.main", borderRadius: 3 }}></Box>
+          <Box sx={{ flex: 1, bgcolor: "primary.main", borderRadius: 3 }}></Box>
+          <Box sx={{ flex: 1, bgcolor: "primary.main", borderRadius: 3 }}></Box>
+        </Box>
+      </Box>
+    </Box>
   )
 }
 
