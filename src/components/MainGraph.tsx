@@ -2,6 +2,7 @@ import { AgCharts } from 'ag-charts-react';
 import { AllCommunityModule, ModuleRegistry } from 'ag-charts-community';
 import Box from '@mui/material/Box';
 import { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabaseClient';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -12,8 +13,16 @@ const MainGraph = () => {
   useEffect(() => {
     const updateData = async () => {
       try {
-        const response = await fetch('./pressure.json'); // fetch from public folder
-        const pressureData = await response.json();
+        const { data: pressureData, error } = await supabase
+          .from('breath_raw')
+          .select('t_sec, raw')
+          .order('t_sec', { ascending: true })
+          .range(0, 99999); // Fetch up to 100k rows
+
+        if (error) {
+          console.error(error);
+          return;
+        }
 
         const transformed = pressureData.map((point: { t_sec: number; raw: number }) => ({
           t_min: point.t_sec / 60,
@@ -22,13 +31,13 @@ const MainGraph = () => {
 
         setTransformedData(transformed);
       } catch (err) {
-        console.error('Failed to fetch pressure data:', err);
+        console.error('Failed to fetch breathing data:', err);
       }
     };
 
     updateData(); // run immediately on mount
 
-    const interval = setInterval(updateData, 2500); // fetch every 2.5s
+    const interval = setInterval(updateData, 1000); // fetch every 1 second for live updates
 
     return () => clearInterval(interval); // cleanup on unmount
   }, []);
@@ -99,7 +108,7 @@ const MainGraph = () => {
   };
 
   return (
-    <Box sx={{ width: '100%', height: '100%'}}>
+    <Box sx={{ width: '100%', height: '100%' }}>
       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
       <AgCharts options={chartOptions as any} />
     </Box>
