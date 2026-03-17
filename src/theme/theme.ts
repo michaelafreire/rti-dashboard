@@ -30,19 +30,19 @@ declare module '@mui/material/styles' {
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#201b29',
-      light: '#352e44',
+      main: '#151e227a',
+      light: '#151e22',
     },
     secondary: {
-      main: '#020816',
+      main: '#010304',
     },
     text: {
       primary: '#ffffff',
-      secondary: '#a0a0a0',
-      disabled: '#707070',
+      secondary: '#ffffff',
+      disabled: '#ffffff',
     },
     background: {
-      default: '#020816',
+      default: '#010304',
       paper: 'rgb(9, 16, 32)',
     },
     custom: {
@@ -52,7 +52,7 @@ const theme = createTheme({
       yellowLight: '#f3a55f',
       purpleMain: '#792842',
       purpleLight: '#b8728d',
-      blueMain: '#4d6662',
+      blueMain: '#0c8a86',
       blueLight: '#7fa3a0',
     },
   },
@@ -80,6 +80,22 @@ const theme = createTheme({
       fontSize: '0.875rem',
       '@media (max-width:600px)': {
         fontSize: '0.75rem',
+      },
+    },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          '&:hover': {
+            color: '#ff7fc6',
+          },
+        },
+        outlined: {
+          '&:hover': {
+            borderColor: '#ff7fc6',
+          },
+        },
       },
     },
   },

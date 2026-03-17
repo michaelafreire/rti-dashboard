@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { AgCharts } from "ag-charts-react";
 import {
   LegendModule,
@@ -12,25 +11,24 @@ ModuleRegistry.registerModules([DonutSeriesModule, LegendModule]);
 
 // Example data function
 const getData = () => [
-  { asset: "Inhalation", amount: 40 },
-  { asset: "Exhalation", amount: 25 },
+  { asset: "Inhalation", amount: 45 },
+  { asset: "Exhalation", amount: 35 },
   { asset: "Rest", amount: 20 },
-  { asset: "Other", amount: 15 },
 ];
 
 function MetricComponent() {
-  const [options, setOptions] = useState({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const options: any = {
     data: getData(),
     background: { fill: "transparent" },
     theme: {
       palette: {
         fills: [
-          "rgba(223, 153, 70, 0.3)",
-          "rgba(216, 32, 104, 0.3)",
-          "rgba(77, 102, 98, 0.3)",
-          "rgba(121, 40, 66, 0.3)",
+          "rgba(218, 32, 104, 0.3)",
+          "rgba(231, 65, 140, 0.3)",
+          "rgba(127, 160, 198, 0.3)",
         ],
-        strokes: ["#f3a55f", "#ea6fa3", "#7fa3a0", "#b8728d"],
+        strokes: ["#ea6fa3", "#ff7fc6", "#7fa3a0"],
       },
       overrides: {
         common: {
@@ -53,14 +51,15 @@ function MetricComponent() {
         type: "donut",
         calloutLabelKey: "asset",
         angleKey: "amount",
-        strokeWidth: 1,
+        strokeWidth: 0,
+        innerRadiusRatio: 0.65,
       },
     ],
-  });
+  };
 
   return (
     <Box sx={{ width: "100%", height: "400px" }}>
-      <AgCharts options={options as any} />
+      <AgCharts options={options} />
     </Box>
   );
 }

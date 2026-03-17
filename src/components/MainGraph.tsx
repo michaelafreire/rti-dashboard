@@ -24,8 +24,8 @@ const MainGraph = () => {
       try {
         console.log('Fetching data...');
         const { data: pressureData, error } = await supabase
-          .from('breath_raw')
-          .select('t_sec, raw, participant_id')
+          .from('breath_debug')
+          .select('t_sec, norm, participant_id')
           .order('t_sec', { ascending: true })
           .range(0, 99999); // Fetch up to 100k rows
 
@@ -47,7 +47,7 @@ const MainGraph = () => {
         // Group data by time, with each participant as a separate column
         const dataByTime = new Map<number, DataPoint>();
 
-        pressureData.forEach((point: { t_sec: number; raw: number; participant_id: string }) => {
+        pressureData.forEach((point: { t_sec: number; norm: number; participant_id: string }) => {
           const t_min = point.t_sec / 60;
 
           if (!dataByTime.has(t_min)) {
@@ -56,7 +56,7 @@ const MainGraph = () => {
 
           const timePoint = dataByTime.get(t_min);
           if (timePoint) {
-            timePoint[`participant_${point.participant_id}`] = point.raw;
+            timePoint[`participant_${point.participant_id}`] = point.norm;
           }
         });
 
@@ -80,11 +80,11 @@ const MainGraph = () => {
         common: {
           title: { color: '#ffffff' },
           axes: {
-            label: { color: '#ffffff' },
-            title: { color: '#ffffff' },
+            label: { color: 'rgba(255, 255, 255, 0.7)' },
+            title: { color: 'rgba(255, 255, 255, 0.8)' },
           },
           legend: {
-            item: { label: { color: '#ffffff' } },
+            item: { label: { color: 'rgba(255, 255, 255, 0.9)' } },
           },
         },
         area: {
@@ -110,11 +110,9 @@ const MainGraph = () => {
         position: 'bottom',
         min: 0,
         max: 7,
-        interval: 1,
         title: { text: 'Time (minutes)', enabled: true, color: '#ffffff', fontSize: 12 },
         label: { color: '#ffffff' },
-        tick: { color: '#ffffff', size: 0 },
-        line: { strokeWidth: 0 },
+        tick: { stroke: '#ffffff', size: 0 },
         gridLine: { enabled: false },
         crossLines: [
           { type: 'range' as const, range: [0, 0.01], stroke: '#ffffff', strokeWidth: 1, lineDash: [5, 5] },
@@ -130,7 +128,6 @@ const MainGraph = () => {
       y: {
         type: 'number',
         position: 'left',
-        title: { text: 'Pressure (raw)', enabled: true, color: '#ffffff', fontSize: 12 },
         label: { color: '#ffffff' },
       },
     },

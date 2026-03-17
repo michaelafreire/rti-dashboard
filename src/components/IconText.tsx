@@ -1,55 +1,62 @@
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
-import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
-import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import type { ElementType } from 'react'
+import { useState } from 'react'
 
 type IconTextProps = {
   icon: ElementType
   number?: number
   title?: string
-  description1?: string
-  description2?: string
+  description?: string
 }
 
 export default function IconText(props: IconTextProps) {
   const Icon = props.icon
+  const [isHovered, setIsHovered] = useState(false)
 
   return (
-    <Card sx={{ width: '100%', height: '100%', bgcolor: 'transparent', boxShadow: 'none' }}>
-      <CardContent>
+    <Card
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      sx={{
+        width: '100%',
+        height: '100%',
+        bgcolor: 'transparent',
+        boxShadow: 'none',
+        transition: 'transform 0.2s ease',
+        transform: isHovered ? 'translateY(-4px)' : 'translateY(0)',
+      }}
+    >
+      <CardContent sx={{ padding: 3, display: 'flex', alignItems: 'flex-start', gap: 2 }}>
         <Box
           sx={{
-            width: 60,
-            height: 60,
-            bgcolor: 'primary.light',
+            width: 52,
+            height: 52,
+            bgcolor: 'rgba(218, 32, 104, 0.2)',
             borderRadius: '50%',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            boxShadow: 3,
-            marginBottom: 2,
-            marginLeft: 'auto',
-            marginRight: 'auto',
+            flexShrink: 0,
+            transition: 'bgcolor 0.2s ease',
           }}
         >
-          <Icon sx={{ fontSize: 40, color: 'white' }} />
+          <Icon sx={{ fontSize: 28, color: 'text.secondary' }} />
         </Box>
-        <Typography variant="h5" component="div">
-          {props.number}
-        </Typography>
-        <Typography sx={{ color: 'text.secondary', mb: 1.5 }}>{props.title}</Typography>
-        <Typography variant="body2">
-          {props.description1}
-          <br />
-          {props.description2}
-        </Typography>
+        <Box sx={{ flex: 1 }}>
+          <Typography variant="h4" sx={{ fontWeight: 700, color: 'text.secondary', lineHeight: 1, mb: 0.5 }}>
+            {props.number}
+          </Typography>
+          <Typography variant="body1" sx={{ color: 'text.secondary', fontWeight: 600, mb: 0.5 }}>
+            {props.title}
+          </Typography>
+          <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+            {props.description}
+          </Typography>
+        </Box>
       </CardContent>
-      <CardActions>
-        <Button size="small">Learn More</Button>
-      </CardActions>
     </Card>
   )
 }
