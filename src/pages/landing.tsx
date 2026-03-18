@@ -227,7 +227,7 @@ function landing() {
         </Box>
 
         {/* Team */}
-        <Box sx={{ maxWidth: 800, textAlign: 'left' }}>
+        <Box sx={{ maxWidth: 800, textAlign: 'left', mb: 8  }}>
           <Typography variant="h6" sx={{ color: 'text.secondary', fontWeight: 600, mb: 2 }}>
             Team
           </Typography>

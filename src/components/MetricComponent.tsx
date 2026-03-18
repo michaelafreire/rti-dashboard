@@ -5,30 +5,41 @@ import {
   ModuleRegistry,
 } from "ag-charts-community";
 import Box from "@mui/material/Box";
+import { useMemo } from 'react';
+import { useBreathingData } from '../context/BreathingDataContext';
 
 // Register the modules
 ModuleRegistry.registerModules([DonutSeriesModule, LegendModule]);
 
-// Example data function
-const getData = () => [
-  { asset: "Inhalation", amount: 45 },
-  { asset: "Exhalation", amount: 35 },
-  { asset: "Rest", amount: 20 },
-];
-
 function MetricComponent() {
+  const { metrics } = useBreathingData();
+
+  const chartData = useMemo(() => {
+    const values = Object.values(metrics);
+    const avgCompliance = values.length > 0
+      ? values.reduce((sum, m) => sum + m.compliance, 0) / values.length
+      : 0;
+
+    const compliance = Math.max(0, Math.min(100, avgCompliance));
+    const remaining = Math.max(0, 100 - compliance);
+
+    return [
+      { asset: 'Compliance', amount: Number(compliance.toFixed(1)) },
+      { asset: 'Remaining', amount: Number(remaining.toFixed(1)) },
+    ];
+  }, [metrics]);
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const options: any = {
-    data: getData(),
+    data: chartData,
     background: { fill: "transparent" },
     theme: {
       palette: {
         fills: [
-          "rgba(218, 32, 104, 0.3)",
-          "rgba(231, 65, 140, 0.3)",
-          "rgba(127, 160, 198, 0.3)",
+          "rgba(127, 198, 161, 0.35)",
+          "rgba(218, 32, 104, 0.2)",
         ],
-        strokes: ["#ea6fa3", "#ff7fc6", "#7fa3a0"],
+        strokes: ["#7fc6a1", "#ea6fa3"],
       },
       overrides: {
         common: {
@@ -43,9 +54,6 @@ function MetricComponent() {
         },
       },
     },
-    // title: {
-    //   text: "Breathing Composition",
-    // },
     series: [
       {
         type: "donut",

@@ -1,143 +1,83 @@
 import { AgCharts } from 'ag-charts-react';
 import { AllCommunityModule, ModuleRegistry } from 'ag-charts-community';
+import type { AgChartOptions } from 'ag-charts-community';
 import Box from '@mui/material/Box';
-import { useState, useEffect, useMemo } from 'react';
-import { supabase } from '../lib/supabaseClient';
+import { useMemo, useEffect } from 'react';
+import { useBreathingData } from '../context/BreathingDataContext';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-// Colors for different participants
-const PARTICIPANT_COLORS = ['#792842', '#4A90E2', '#50C878', '#F39C12', '#9B59B6', '#E74C3C', '#1ABC9C', '#34495E'];
+const PARTICIPANT_COLORS = [
+  '#792842', '#4A90E2', '#50C878', '#F39C12',
+  '#9B59B6', '#E74C3C', '#1ABC9C', '#34495E'
+];
 
-interface DataPoint {
-  t_min: number;
-  [key: string]: number;
-}
+type MainGraphProps = {
+  latestOnly?: boolean;
+};
 
-const MainGraph = () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [transformedData, setTransformedData] = useState<any[]>([]);
-  const [participants, setParticipants] = useState<string[]>([]);
+const MainGraph = ({ latestOnly = false }: MainGraphProps) => {
+  const { cleanedData, participants, setLatestOnly } = useBreathingData();
 
+  // ✅ Sync prop → context
   useEffect(() => {
-    const updateData = async () => {
-      try {
-        console.log('Fetching data...');
-        const { data: pressureData, error } = await supabase
-          .from('breath_debug')
-          .select('t_sec, norm, participant_id')
-          .order('t_sec', { ascending: true })
-          .range(0, 99999); // Fetch up to 100k rows
+    setLatestOnly(latestOnly);
+  }, [latestOnly, setLatestOnly]);
 
-        if (error) {
-          console.error(error);
-          return;
-        }
-
-        console.log(`Fetched ${pressureData?.length || 0} rows`);
-
-        // Get unique participants
-        const uniqueParticipants = Array.from(
-          new Set(pressureData.map((p: { participant_id: string }) => p.participant_id))
-        ).sort();
-
-        console.log(`Found ${uniqueParticipants.length} participants:`, uniqueParticipants);
-        setParticipants(uniqueParticipants);
-
-        // Group data by time, with each participant as a separate column
-        const dataByTime = new Map<number, DataPoint>();
-
-        pressureData.forEach((point: { t_sec: number; norm: number; participant_id: string }) => {
-          const t_min = point.t_sec / 60;
-
-          if (!dataByTime.has(t_min)) {
-            dataByTime.set(t_min, { t_min });
-          }
-
-          const timePoint = dataByTime.get(t_min);
-          if (timePoint) {
-            timePoint[`participant_${point.participant_id}`] = point.norm;
-          }
-        });
-
-        const transformed = Array.from(dataByTime.values()).sort((a, b) => a.t_min - b.t_min);
-        setTransformedData(transformed);
-      } catch (err) {
-        console.error('Failed to fetch breathing data:', err);
-      }
-    };
-
-    updateData(); // run immediately on mount
-
-    const interval = setInterval(updateData, 1000); // fetch every 1 second for live updates
-
-    return () => clearInterval(interval); // cleanup on unmount
-  }, []);
-
-  const chartOptions = useMemo(() => ({
+  // ✅ Chart config
+  const chartOptions = useMemo<AgChartOptions>(() => ({
     theme: {
       overrides: {
         common: {
           title: { color: '#ffffff' },
-          axes: {
-            label: { color: 'rgba(255, 255, 255, 0.7)' },
-            title: { color: 'rgba(255, 255, 255, 0.8)' },
-          },
+          subtitle: { color: '#ffffff' },
           legend: {
-            item: { label: { color: 'rgba(255, 255, 255, 0.9)' } },
+            item: {
+              label: { color: '#ffffff' },
+            },
           },
-        },
-        area: {
-          series: { interpolation: { type: 'smooth' } as const, strokeWidth: 2, fillOpacity: 0.7 },
+          axes: {
+            number: {
+              label: { color: '#ffffff' },
+              title: { color: '#ffffff' },
+            },
+          },
         },
       },
     },
     background: { fill: 'transparent' },
-    data: transformedData,
-    // title: { text: 'Breathing Rate' },
-    series: participants.map((participantId, index) => ({
+    data: cleanedData,
+
+    series: participants.map((pid, i) => ({
       type: 'line' as const,
       xKey: 't_min',
-      yKey: `participant_${participantId}`,
-      yName: `Participant ${participantId}`,
-      stroke: PARTICIPANT_COLORS[index % PARTICIPANT_COLORS.length],
+      yKey: `participant_${pid}`,
+      yName: `Participant ${pid}`,
+      stroke: PARTICIPANT_COLORS[i % PARTICIPANT_COLORS.length],
       strokeWidth: 2,
       marker: { enabled: false },
     })),
+
     axes: {
       x: {
         type: 'number',
         position: 'bottom',
+        title: { text: 'Time (minutes)' },
         min: 0,
         max: 7,
-        title: { text: 'Time (minutes)', enabled: true, color: '#ffffff', fontSize: 12 },
-        label: { color: '#ffffff' },
-        tick: { stroke: '#ffffff', size: 0 },
-        gridLine: { enabled: false },
-        crossLines: [
-          { type: 'range' as const, range: [0, 0.01], stroke: '#ffffff', strokeWidth: 1, lineDash: [5, 5] },
-          { type: 'range' as const, range: [1, 1.01], stroke: '#ffffff', strokeWidth: 1, lineDash: [5, 5] },
-          { type: 'range' as const, range: [2, 2.01], stroke: '#ffffff', strokeWidth: 1, lineDash: [5, 5] },
-          { type: 'range' as const, range: [3, 3.01], stroke: '#ffffff', strokeWidth: 1, lineDash: [5, 5] },
-          { type: 'range' as const, range: [4, 4.01], stroke: '#ffffff', strokeWidth: 1, lineDash: [5, 5] },
-          { type: 'range' as const, range: [5, 5.01], stroke: '#ffffff', strokeWidth: 1, lineDash: [5, 5] },
-          { type: 'range' as const, range: [6, 6.01], stroke: '#ffffff', strokeWidth: 1, lineDash: [5, 5] },
-          { type: 'range' as const, range: [7, 7.01], stroke: '#ffffff', strokeWidth: 1, lineDash: [5, 5] },
-        ],
       },
       y: {
         type: 'number',
         position: 'left',
-        label: { color: '#ffffff' },
       },
     },
-    tooltip: { position: { placement: ['right', 'left', 'top', 'bottom'] } },
-  }), [transformedData, participants]);
+
+    tooltip: { enabled: true }
+  }), [cleanedData, participants]);
 
   return (
     <Box sx={{ width: '100%', height: '100%' }}>
-      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-      <AgCharts options={chartOptions as any} />
+      <AgCharts options={chartOptions} />
     </Box>
   );
 };
