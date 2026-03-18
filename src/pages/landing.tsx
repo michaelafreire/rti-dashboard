@@ -62,7 +62,7 @@ function landing() {
           <Typography variant="h1" sx={{ color: 'text.secondary', fontWeight: 'bold' }}>
             Just Breathe
           </Typography>
-          <Typography variant="body1" sx={{ color: 'text.secondary'}}>
+          <Typography variant="body1" sx={{ color: 'text.secondary' }}>
             Live Breathing Biofeedback Experience
           </Typography>
         </Box>
@@ -79,8 +79,8 @@ function landing() {
             justifyContent: 'center',
           }}
         >
-          <Button onClick={scrollToAbout} variant="outlined" sx={{color: 'text.secondary', borderColor: 'text.secondary', width: 140, textTransform: 'none', transition: 'all 0.2s ease', '&:hover': { color: '#ff7fc6', borderColor: '#ff7fc6', bgcolor: 'rgba(255, 127, 198, 0.15)' }}}>About</Button>
-          <Button component={Link} to="/currentUser" variant="outlined" sx={{color: 'text.secondary', borderColor: 'text.secondary', width: 140, textTransform: 'none', transition: 'all 0.2s ease', '&:hover': { color: '#ff7fc6', borderColor: '#ff7fc6', bgcolor: 'rgba(255, 127, 198, 0.15)' }}}>Dashboard</Button>
+          <Button onClick={scrollToAbout} variant="outlined" sx={{ color: 'text.secondary', borderColor: 'text.secondary', width: 140, textTransform: 'none', transition: 'all 0.2s ease', '&:hover': { color: '#ff7fc6', borderColor: '#ff7fc6', bgcolor: 'rgba(255, 127, 198, 0.15)' } }}>About</Button>
+          <Button component={Link} to="/currentUser" variant="outlined" sx={{ color: 'text.secondary', borderColor: 'text.secondary', width: 140, textTransform: 'none', transition: 'all 0.2s ease', '&:hover': { color: '#ff7fc6', borderColor: '#ff7fc6', bgcolor: 'rgba(255, 127, 198, 0.15)' } }}>Dashboard</Button>
         </Box>
       </Box>
 
@@ -110,9 +110,7 @@ function landing() {
             Introduction
           </Typography>
           <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.9)', lineHeight: 1.7 }}>
-            Our approach is grounded in respiratory physiology and biofeedback science. By providing real-time
-            visual feedback of breathing patterns, users develop body awareness and can improve breath control.
-            This promotes parasympathetic nervous system activation, reducing stress and enhancing overall well-being.
+            Just Breathe is a closed-loop breathing biofeedback system that translates users’ respiratory activity into real-time visual feedback. By directly coupling breathing patterns with system responses, it creates an interactive and continuous feedback loop in which users can both observe and influence their physiological state. The goal of this system is to enhance awareness of breathing and support its regulation, enabling users to gradually adjust their respiration through ongoing, perceptible interaction.
           </Typography>
         </Box>
 
@@ -122,9 +120,7 @@ function landing() {
             Theory
           </Typography>
           <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.9)', lineHeight: 1.7 }}>
-            Our approach is grounded in respiratory physiology and biofeedback science. By providing real-time
-            visual feedback of breathing patterns, users develop body awareness and can improve breath control.
-            This promotes parasympathetic nervous system activation, reducing stress and enhancing overall well-being.
+            Deep or slow breathing is widely recognized as an effective mechanism for reducing stress and anxiety, improving autonomic regulation, and increasing heart rate variability, reflecting enhanced parasympathetic activation and relaxation (Cheng et al., 2018). Building on this physiological foundation, immersive digital environments, such as virtual reality (VR), have been shown to be safe and effective tools for supporting stress and anxiety management and inducing relaxation in healthy individuals (Chittaro et al., 2024). Further, studies on biofeedback suggest that these relaxation effects can be enhanced by allowing users’ physiological signals—such as breathing—to directly shape the interaction, while simultaneously making these signals visible to the user in real time. This creates a closed-loop system in which individuals become aware of their internal states and can intentionally regulate them, contributing to reductions in perceived stress, breathing rate, and heart rate (Chittaro et al., 2024). The duration of deep breathing also plays a critical role, with anxiety reduction occurring after approximately five minutes and deeper physiological relaxation typically requiring 7–9 minutes of sustained practice (Cheng et al., 2018). However, despite these insights, existing studies have not examined whether brief, single-session mixed-reality (MR) experiences—particularly those in which interaction is explicitly controlled by users’ breathing and supported by continuous, perceivable visual feedback—are sufficient to guide users toward the optimal deep-breathing frequency of approximately 0.1 Hz. Addressing this gap, the present research investigates whether interacting with a system whose mechanics are driven by users’ breathing, and which provides real-time visual feedback on that breathing, can lead participants to slow their breathing rate and converge toward this target frequency.
           </Typography>
         </Box>
 
@@ -148,9 +144,7 @@ function landing() {
               }}
             />
             <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.9)', lineHeight: 1.7 }}>
-              Just Breathe is an interactive breathing biofeedback experience designed to help users slow down,
-              focus on breath rhythm, and track breathing patterns over time. By combining real-time visualization
-              with guided breathing exercises, we create a mindful environment for respiratory exploration.
+              The system captures breathing pressure using a force-sensitive resistor (FSR) sensor, which is continuously normalized and processed in real time. Inhalation onsets are detected from the signal using a combination of baseline-relative thresholds, dynamic hysteresis, and slope analysis to ensure robust identification of breathing cycles. Based on these detected events, breathing rate (in breaths per minute) is estimated over a rolling time window and mapped to visual properties—such as opacity and scale—providing users with immediate, perceivable feedback. All data is streamed live to drive the visualization while also being recorded for post hoc analysis.
             </Typography>
           </Box>
         </Box>
@@ -219,15 +213,27 @@ function landing() {
               </Typography>
             </Box>
           </Box>
+          <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.9)', lineHeight: 1.7, mb: 1.5 }}>
+            Participants complete a single 7-minute interactive biofeedback breathing experience in one of three between-subjects conditions.
+          </Typography>
+          <Box component="ul" sx={{ color: 'rgba(255, 255, 255, 0.9)', lineHeight: 1.7, pl: 3, m: 0, mb: 1.5 }}>
+            <li>
+              Condition 1 (Interaction + Feedback): Visual system where interaction is controlled by breathing, with a visual feedback visual that grows with inhalation, shrinks with exhalation, and guides toward slower breathing with a pink circle to set ideal rhythm.
+            </li>
+            <li>
+              Condition 2 (Interaction Only): Visual system where interaction is controlled by breathing, with a visual that grows with inhalation and shrinks with exhalation (no explicit rate guidance).
+            </li>
+            <li>
+              Condition 3 (Control): No breathing-controlled interaction or feedback.
+            </li>
+          </Box>
           <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.9)', lineHeight: 1.7 }}>
-            Participants engage with breathing exercises under controlled conditions, with their respiratory data
-            collected in real-time. The platform tracks inhalation and exhalation rates, identifies individual patterns,
-            and adapts guidance to optimize user experience and outcome.
+            Breathing rate is measured continuously to test convergence toward 0.1 Hz deep breathing. A User Experience Questionnaire (UEQ) is administered post-interaction to assess perceived attractiveness, perspicuity, efficiency, dependability, stimulation, and novelty of the system.
           </Typography>
         </Box>
 
         {/* Team */}
-        <Box sx={{ maxWidth: 800, textAlign: 'left', mb: 8  }}>
+        <Box sx={{ maxWidth: 800, textAlign: 'left', mb: 8 }}>
           <Typography variant="h6" sx={{ color: 'text.secondary', fontWeight: 600, mb: 2 }}>
             Team
           </Typography>
